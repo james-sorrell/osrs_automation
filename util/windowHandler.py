@@ -3,6 +3,7 @@ import win32gui
 import win32ui
 from ctypes import windll
 import matplotlib.pyplot as plt
+from PIL import Image
 
 class WindowHandler:
     def __init__(self, title):
@@ -43,11 +44,10 @@ class WindowHandler:
 
         saveDC.SelectObject(saveBitMap)
         result = windll.user32.PrintWindow(self.hwnd, saveDC.GetSafeHdc(), 0)
-        print(result)
 
         bmpinfo = saveBitMap.GetInfo()
         bmpstr = saveBitMap.GetBitmapBits(True)
-        from PIL import Image
+        
         im = Image.frombuffer(
             'RGB',
             (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
