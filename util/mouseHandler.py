@@ -1,6 +1,7 @@
 import time
 import pyautogui as mh
 import numpy as np
+import util.config as c
 
 class Mouse:
     def __init__(self, base_x, base_y):
@@ -9,6 +10,7 @@ class Mouse:
 
     def _sleep(self, delay):
         duration = self._getDuration(delay)
+        c.debugPrint("\tMouse: Sleeping for {}s.".format(duration), c.DEBUG)
         time.sleep(duration)
 
     def _getDuration(self, speed):
@@ -21,9 +23,11 @@ class Mouse:
 
     def _moveToPoint(self, x, y, speed='fast'):
         duration = self._getDuration(speed)
+        c.debugPrint("\tMouse: Moving to {},{}.".format(x, y), c.DEBUG)
         mh.moveTo(self.base_x+x, self.base_y+y, duration)
 
     def click(self, delay='fast'):
+        c.debugPrint("\tMouse: Clicking.", c.DEBUG)
         mh.click()
         self._sleep(delay)
 

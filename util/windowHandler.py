@@ -31,6 +31,7 @@ class WindowHandler:
                     self.title = win[1].lower()
 
     def getImage(self, location):
+        c.debugPrint("WindowHandler: Getting image from {}".format(location), c.DEBUG)
         left, top, right, bot = self.getWindowRect()
         w = right - left
         h = bot - top
