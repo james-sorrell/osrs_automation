@@ -1,6 +1,8 @@
 import numpy as np
 import util.config as c
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import cv2
 
 class DetectionHandler:
   def __init__(self, window):
@@ -51,3 +53,69 @@ class DetectionHandler:
           return True
     c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
     return False
+
+  def findArea(self, loc, tar):
+    c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
+    im = self.window.getImage(loc)
+
+    w, h = im.size
+
+    locations = {}
+
+    for i in range(h):
+      for j in range(w):
+        clr = im.getpixel((j, i))
+        if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
+          # Found
+          if i in locations:
+            locations[i].append(j)
+          else:
+            locations[i] = [j]
+
+    largestArea = 0
+    largestBox = None
+    currBox = None
+    currBoxArea = 0
+    prevKey = None
+    for key in locations:
+      
+      xPos = locations[key]
+      if currBox:
+        boxL = max(xPos[0], currBox[0])
+        boxR = min(xPos[-1], currBox[2])
+      else:
+        boxL, boxR = xPos[0], xPos[-1]
+      newBoxWidth = boxR - boxL
+
+      if (prevKey is None):
+        prevKey = key
+        continue
+
+      # Check if sequential locations
+      if (abs(key-prevKey) < 2 and newBoxWidth > 5):
+        if currBox is None:
+          currBox = [xPos[0], prevKey, xPos[1], key]
+        else:
+          currBox[0] = max(xPos[0], currBox[0])
+          currBox[2] = min(xPos[-1], currBox[2])
+          currBox[3] = key
+      else:
+        if currBox is not None:
+          currBoxArea = (currBox[2]-currBox[0])*(currBox[3]-currBox[1])
+          if currBoxArea > largestArea:
+            largestBox = currBox
+            largestArea = currBoxArea
+        currBox = None
+        currBoxArea = None
+
+      prevKey = key
+
+    if largestBox is None:
+      return None
+    
+    largestBox[0] += loc[0]
+    largestBox[2] += loc[0]
+    largestBox[1] += loc[1]
+    largestBox[3] += loc[1]
+
+    return largestBox

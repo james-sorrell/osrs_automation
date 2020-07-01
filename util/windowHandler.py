@@ -14,7 +14,6 @@ class WindowHandler:
         Function to get first window that contains title
         this function is case insensitive
         """
-        print(type(title))
         if not isinstance(title, str):
             print("WindowHandler -> getWindow: Title needs to be string!")
             quit()
