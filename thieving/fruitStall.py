@@ -1,36 +1,27 @@
-import util.windowHandler as wh
-import util.mouseHandler as mh
-import util.detectionFunctions as df
+from osbrain.osbrain import OSBrain
 import util.timingHelpers as th
 import util.config as c
-
-c.VERBOSE = 2
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-PEAR_lOC = (355, 205, 365, 215)
+c.VERBOSITY = 2
+
+PEAR_lOC = (338, 193, 389, 223)
 PEAR_CLR = (83, 165, 7)
 
-window = wh.WindowHandler("runelite")
-window.bringForward()
-x, y, _, _ = window.getWindowRect()
-mouse = mh.Mouse(x, y)
-dh = df.DetectionHandler(window)
+b = OSBrain()
 
-mouse.moveToBox(350, 380, 145, 180, 'fast')
-detectedLastPoll = False
+b.dropInventory()
+quit()
 
-while(dh.isInventoryFull() is False):
-  if (dh.colorSearch(PEAR_lOC, PEAR_CLR)):
-    if (detectedLastPoll is False):
-      mouse.click('fast')
-    detectedLastPoll = True
-  else:
-    detectedLastPoll = False
-  th.random_sleep_ms(500,50)
-
-print("Stop doing stuff")
+b.mouse.moveToBox(PEAR_lOC, 'fast')
+while(b.detection.isInventoryFull() is False):
+  if (b.detection.colorSearch(PEAR_lOC, PEAR_CLR)):
+    # It gets two chances to try and see it
+    b.mouse.click('medium')
+  th.random_sleep_ms(1000,50)
+print("Inventory Full.")
   
 
 # inv = df.getInventoryStatus(window)

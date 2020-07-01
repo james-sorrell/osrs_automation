@@ -25,6 +25,8 @@ class DetectionHandler:
     inv_status = np.zeros(28, dtype=bool)
     for i in range(0,h,h_):
       for j in range(0,w,w_):
+        plt.imshow(im[i:i+h_, j:j+w_])
+        plt.show()
         if np.array_equal(empty_inv[i:i+h_, j:j+w_], im[i:i+h_, j:j+w_]) is False:
           inv_status[index] = True
         index += 1

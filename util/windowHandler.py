@@ -25,10 +25,9 @@ class WindowHandler:
         win32gui.EnumWindows(windowHandler, windows)
         for win in windows:
             if title.lower() in win[1].lower():
-                if c.VERBOSE >= 1:
-                    print("Found Window: {}".format(win))
-                    self.hwnd = win[0]
-                    self.title = win[1].lower()
+                c.debugPrint("Found Window: {}".format(win), c.MODERATE)
+                self.hwnd = win[0]
+                self.title = win[1].lower()
 
     def getImage(self, location):
         c.debugPrint("WindowHandler: Getting image from {}".format(location), c.DEBUG)

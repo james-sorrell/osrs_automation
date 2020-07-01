@@ -10,7 +10,7 @@ class Mouse:
 
     def _sleep(self, delay):
         duration = self._getDuration(delay)
-        c.debugPrint("\tMouse: Sleeping for {}s.".format(duration), c.DEBUG)
+        c.debugPrint("\tMouse: Sleeping for {}s.".format(duration), c.MODERATE)
         time.sleep(duration)
 
     def _getDuration(self, speed):
@@ -19,21 +19,20 @@ class Mouse:
         if speed is 'medium':
             return np.random.uniform(0.55, 0.85)
         if speed is 'fast':
-            return np.random.uniform(0.2, 0.025)
+            return np.random.uniform(0.2, 0.25)
 
     def _moveToPoint(self, x, y, speed='fast'):
         duration = self._getDuration(speed)
-        c.debugPrint("\tMouse: Moving to {},{}.".format(x, y), c.DEBUG)
+        c.debugPrint("\tMouse: Moving to {},{}.".format(x, y), c.MODERATE)
         mh.moveTo(self.base_x+x, self.base_y+y, duration)
 
     def click(self, delay='fast'):
-        c.debugPrint("\tMouse: Clicking.", c.DEBUG)
+        c.debugPrint("\tMouse: Clicking.", c.MODERATE)
         mh.click()
         self._sleep(delay)
 
-    def moveToBox(self, x1, x2, y1, y2, speed='fast'):
-        print("{},{} , {},{}".format(x1, x2, y1, y2))
-        x = np.random.randint(x1, x2)
-        y = np.random.randint(y1, y2)
-        print("{}, {}".format(x, y))
+    def moveToBox(self, loc, speed='fast'):
+        c.debugPrint("Mouse: Moving {} to location {}.".format(speed, loc), c.MODERATE)
+        x = np.random.randint(loc[0], loc[2])
+        y = np.random.randint(loc[1], loc[3])
         self._moveToPoint(x, y, speed)
