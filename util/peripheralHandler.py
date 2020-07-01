@@ -10,12 +10,14 @@ class Peripherals:
 
     def _sleep(self, delay):
         duration = self._getDuration(delay)
-        c.debugPrint("\tMouse: Sleeping for {}s.".format(duration), c.MODERATE)
+        c.debugPrint("\tPeripherals: Sleeping for {:.3f}s.".format(duration), c.MODERATE)
         time.sleep(duration)
 
     def _getDuration(self, speed):
-        if speed is 'slow':
+        if speed is 'very_slow':
             return np.random.uniform(2.45, 2.65)
+        if speed is 'slow':
+            return np.random.uniform(0.95, 1.25)
         if speed is 'medium':
             return np.random.uniform(0.55, 0.85)
         if speed is 'fast':

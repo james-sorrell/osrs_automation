@@ -9,5 +9,5 @@ def random_sleep_ms(duration, delta):
   """
   duration_s = duration/1000
   time_s = np.random.uniform(duration_s, delta/1000)
-  c.debugPrint("TimingHelpers: Sleeping for {}s.".format(time_s), c.DEBUG)
+  c.debugPrint("TimingHelpers: Sleeping for {:.3f}s.".format(time_s), c.DEBUG)
   time.sleep(time_s)

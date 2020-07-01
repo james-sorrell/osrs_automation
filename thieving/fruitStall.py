@@ -7,18 +7,27 @@ import matplotlib.pyplot as plt
 
 c.VERBOSITY = 1
 
-PEAR_lOC = (338, 193, 389, 223)
+PEAR_lOC = (338, 203, 389, 223)
 PEAR_CLR = (83, 165, 7)
 
 b = OSBrain()
 
-for _ in range(2):
+fruitNotFoundCount = 0
+
+for _ in range(10):
   b.per.moveToBox(PEAR_lOC, 'fast')
   while(b.detection.isInventoryFull() is False):
     if (b.detection.colorSearch(PEAR_lOC, PEAR_CLR)):
       # It gets two chances to try and see it
-      b.per.click('medium')
-    th.random_sleep_ms(1000,50)
+      b.per.click('slow')
+      fruitNotFoundCount = 0
+    else:
+      fruitNotFoundCount += 1
+      print("Fruit not found count: {}".format(fruitNotFoundCount))
+    if (fruitNotFoundCount >= 10):
+      print("Safeguard exit.")
+      quit()
+    th.random_sleep_ms(500,50)
   th.random_sleep_ms(300,50)
   print("Inventory Full.")
   b.dropInventory()
