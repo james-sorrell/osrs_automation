@@ -5,23 +5,23 @@ import util.config as c
 import numpy as np
 import matplotlib.pyplot as plt
 
-c.VERBOSITY = 2
+c.VERBOSITY = 1
 
 PEAR_lOC = (338, 193, 389, 223)
 PEAR_CLR = (83, 165, 7)
 
 b = OSBrain()
 
-b.dropInventory()
-quit()
-
-b.mouse.moveToBox(PEAR_lOC, 'fast')
-while(b.detection.isInventoryFull() is False):
-  if (b.detection.colorSearch(PEAR_lOC, PEAR_CLR)):
-    # It gets two chances to try and see it
-    b.mouse.click('medium')
-  th.random_sleep_ms(1000,50)
-print("Inventory Full.")
+for _ in range(2):
+  b.per.moveToBox(PEAR_lOC, 'fast')
+  while(b.detection.isInventoryFull() is False):
+    if (b.detection.colorSearch(PEAR_lOC, PEAR_CLR)):
+      # It gets two chances to try and see it
+      b.per.click('medium')
+    th.random_sleep_ms(1000,50)
+  th.random_sleep_ms(300,50)
+  print("Inventory Full.")
+  b.dropInventory()
   
 
 # inv = df.getInventoryStatus(window)

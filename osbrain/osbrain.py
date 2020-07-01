@@ -1,5 +1,5 @@
 import util.windowHandler as wh
-import util.mouseHandler as mh
+import util.peripheralHandler as ph
 import util.config as c
 import osbrain.detectionFunctions as df
 import numpy as np
@@ -9,7 +9,7 @@ class OSBrain:
     self.window = wh.WindowHandler("runelite")
     self.window.bringForward()
     x, y, _, _ = self.window.getWindowRect()
-    self.mouse = mh.Mouse(x, y)
+    self.per = ph.Peripherals(x, y)
     self.detection = df.DetectionHandler(self.window)
   
   def dropInventory(self, pattern=None):
@@ -24,7 +24,7 @@ class OSBrain:
     h_ = h//7
     w_ = w//4
     
-    print(pattern)
+    self.per.keyDown('shift', 'medium')
     for location in pattern:
       row = location%4
       col = location//4
@@ -32,10 +32,10 @@ class OSBrain:
       loc_y = y1+col*h_
       invSquare = (loc_x+c.CLK_BOX[0], loc_y+c.CLK_BOX[1],
                   loc_x+c.CLK_BOX[2], loc_y+c.CLK_BOX[3])
-      self.mouse.moveToBox(invSquare, 'fast')
+      self.per.moveToBox(invSquare, 'fast')
+      self.per.click('very_fast')
+    self.per.keyUp('shift', 'medium')
 
-
-      
     # We need to hold down shift
     # Then we move the mouse to each index
     # Then we click
