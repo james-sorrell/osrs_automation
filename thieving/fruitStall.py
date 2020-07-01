@@ -28,7 +28,7 @@ for _ in range(10):
       print("Safeguard exit.")
       quit()
     th.random_sleep_ms(500,50)
-  th.random_sleep_ms(300,50)
+  th.random_sleep_ms(100, 25)
   print("Inventory Full.")
   b.dropInventory()
   

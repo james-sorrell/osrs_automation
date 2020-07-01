@@ -23,7 +23,7 @@ class Peripherals:
         if speed is 'fast':
             return np.random.uniform(0.2, 0.25)
         if speed is 'very_fast':
-            return np.random.uniform(0.05, 0.25)
+            return np.random.uniform(0.05, 0.15)
 
     def _moveToPoint(self, x, y, speed='fast'):
         duration = self._getDuration(speed)
