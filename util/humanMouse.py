@@ -8,7 +8,6 @@ from scipy import interpolate
 def move(x2, y2, duration):
   cp = random.randint(3, 5)  # Number of control points. Must be at least 2.
   x1, y1 = mouse.get_position()
-  print(x1, y1)
   # Distribute control points between start and destination evenly.
   x = scipy.linspace(x1, x2, num=cp, dtype='int')
   y = scipy.linspace(y1, y2, num=cp, dtype='int')

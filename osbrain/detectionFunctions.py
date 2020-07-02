@@ -41,16 +41,19 @@ class DetectionHandler:
       c.debugPrint("DetectionHandler: Inventory not Full", c.DEBUG)
     return inv_full
 
-  def colorSearch(self, loc, tar):
-    c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
-    im = self.window.getImage(loc)
+  def _iterateImage(self, im):
     w, h = im.size
     for i in range(h):
       for j in range(w):
-        clr = im.getpixel((j, i))
-        if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
-          c.debugPrint("\tDetectionHandler: Color Found.", c.DEBUG)
-          return True
+        yield(im.getpixel((j,i)), i, j)
+
+  def colorSearch(self, loc, tar):
+    c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
+    im = self.window.getImage(loc)
+    for clr, i, j in self._iterateImage(im):
+      if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
+        c.debugPrint("\tDetectionHandler: Color Found.", c.DEBUG)
+        return True
     c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
     return False
 
@@ -66,16 +69,13 @@ class DetectionHandler:
   def colorRangeSearch(self, loc, tar1, tar2):
     c.debugPrint("DetectionHandler: Searching from C{}:C{} in L{}".format(tar1, tar2, loc), c.DEBUG)
     im = self.window.getImage(loc)
-    w, h = im.size
     c1L, c1H, c2L, c2H, c3L, c3H = self._getColorLimits(tar1, tar2)
-    for i in range(h):
-      for j in range(w):
-        clr = im.getpixel((j, i))
-        if ((c1L <= clr[0] and clr[0] <= c1H) and
-            (c2L <= clr[1] and clr[1] <= c2H) and
-            (c3L <= clr[2] and clr[2] <= c3H)):
-          c.debugPrint("\tDetectionHandler: Color Range Found.", c.DEBUG)
-          return True
+    for clr, i, j in self._iterateImage(im):
+      if ((c1L <= clr[0] and clr[0] <= c1H) and
+          (c2L <= clr[1] and clr[1] <= c2H) and
+          (c3L <= clr[2] and clr[2] <= c3H)):
+        c.debugPrint("\tDetectionHandler: Color Range Found.", c.DEBUG)
+        return True
     c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
     return False
 
@@ -154,36 +154,31 @@ class DetectionHandler:
 
   #   return largestBox
 
-  def findArea(self, loc, tar):
+  def findArea(self, loc, tar, threshold=0):
     c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
     im = self.window.getImage(loc)
 
-    print("Find Area V2")
     w, h = im.size
 
     locations = {}
 
     x1, y1, x2, y2 = np.inf, np.inf, 0, 0
-    for i in range(h):
-      for j in range(w):
-        clr = im.getpixel((j, i))
-        if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
-          if (j < x1):
-            x1 = j
-          if (j > x2):
-            x2 = j
-          if (i < y1):
-            y1 = i
-          if (i > y2):
-            y2 = i
+    for clr, i, j in self._iterateImage(im):
+      if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
+        if (j < x1):
+          x1 = j
+        if (j > x2):
+          x2 = j
+        if (i < y1):
+          y1 = i
+        if (i > y2):
+          y2 = i
 
 
     largestBox = [x1, y1, x2, y2]
-    
     midX = (x1+x2)//2
     midY = (y2+y1)//2
     smallBox = [midX-5, midY-5, midX+5, midY+5]
-
 
     # figure, ax = plt.subplots(1)
     # ax.imshow(im)
@@ -198,7 +193,8 @@ class DetectionHandler:
     # rect2 = patches.Rectangle((smallBox[0],smallBox[1]),width,height, edgecolor='r', facecolor="none")
     # ax.add_patch(rect2)
 
-    # plt.show()
-    # quit()
+    # import time
+    # timestr = time.strftime("%Y%m%d-%H%M%S")
+    # plt.savefig("{}.png".format(timestr))
 
     return smallBox

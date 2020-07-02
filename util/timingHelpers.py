@@ -12,12 +12,12 @@ def random_sleep_ms(duration, delta):
   c.debugPrint("TimingHelpers: Sleeping for {:.3f}s.".format(time_s), c.DEBUG)
   time.sleep(time_s)
 
-def timedFunction(duration, function, *args):
-  duration_s = duration/1000
-  duration_s = duration_s//100
-  for _ in range(100):
+def loopedFunction(loops, function, *args):
+  print("Start search")
+  for _ in range(loops):
     res = function(*args)
     if res is True:
+      print("Found")
       return res
-    time.sleep(duration_s)
+  print("Finish search")
   return False

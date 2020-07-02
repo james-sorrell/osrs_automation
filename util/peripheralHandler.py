@@ -17,11 +17,11 @@ class Peripherals:
 
     def _getDuration(self, speed):
         if speed is 'very_slow':
-            return np.random.uniform(2.45, 2.65)
+            return np.random.uniform(2.35, 2.45)
         if speed is 'slow':
-            return np.random.uniform(0.95, 1.25)
+            return np.random.uniform(0.95, 1.05)
         if speed is 'medium':
-            return np.random.uniform(0.55, 0.85)
+            return np.random.uniform(0.55, 0.65)
         if speed is 'fast':
             return np.random.uniform(0.2, 0.25)
         if speed is 'very_fast':
