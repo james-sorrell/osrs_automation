@@ -1,6 +1,8 @@
 import time
 import pyautogui as ph
 import numpy as np
+import mouse as mh
+from util.humanMouse import move
 import util.config as c
 
 class Peripherals:
@@ -25,14 +27,18 @@ class Peripherals:
         if speed is 'very_fast':
             return np.random.uniform(0.05, 0.15)
 
+    def mousePosition(self):
+        x, y =  mh.get_position()
+        return x-self.base_x, y-self.base_y
+
     def _moveToPoint(self, x, y, speed='fast'):
         duration = self._getDuration(speed)
         c.debugPrint("\tMouse: Moving to {},{}.".format(x, y), c.MODERATE)
-        ph.moveTo(self.base_x+x, self.base_y+y, duration)
+        move(self.base_x+x, self.base_y+y, duration)
 
-    def click(self, delay='fast'):
+    def click(self, button='left', delay='fast'):
         c.debugPrint("\tMouse: Clicking.", c.MODERATE)
-        ph.click()
+        mh.click(button)
         self._sleep(delay)
 
     def moveToBox(self, loc, speed='fast'):

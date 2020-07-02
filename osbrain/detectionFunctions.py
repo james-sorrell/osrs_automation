@@ -49,7 +49,32 @@ class DetectionHandler:
       for j in range(w):
         clr = im.getpixel((i, j))
         if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
-          c.debugPrint("\tDetectionHandler: Found.", c.DEBUG)
+          c.debugPrint("\tDetectionHandler: Color Found.", c.DEBUG)
+          return True
+    c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
+    return False
+
+  def _getColorLimits(self, tar1, tar2):
+    c1L = min(tar1[0], tar2[0])
+    c1H = max(tar1[0], tar2[0])
+    c2L = min(tar1[1], tar2[1])
+    c2H = max(tar1[1], tar2[1])
+    c3L = min(tar1[2], tar2[2])
+    c3H = max(tar1[2], tar2[2])
+    return c1L, c1H, c2L, c2H, c3L, c3H
+
+  def colorRangeSearch(self, loc, tar1, tar2):
+    c.debugPrint("DetectionHandler: Searching from C{}:C{} in L{}".format(tar1, tar2, loc), c.DEBUG)
+    im = self.window.getImage(loc)
+    h, w = im.size
+    c1L, c1H, c2L, c2H, c3L, c3H = self._getColorLimits(tar1, tar2)
+    for i in range(h):
+      for j in range(w):
+        clr = im.getpixel((i, j))
+        if ((c1L <= clr[0] and clr[0] <= c1H) and
+            (c2L <= clr[1] and clr[1] <= c2H) and
+            (c3L <= clr[2] and clr[2] <= c3H)):
+          c.debugPrint("\tDetectionHandler: Color Range Found.", c.DEBUG)
           return True
     c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
     return False
@@ -117,5 +142,14 @@ class DetectionHandler:
     largestBox[2] += loc[0]
     largestBox[1] += loc[1]
     largestBox[3] += loc[1]
+    width = largestBox[2] - largestBox[0]
+    height = largestBox[3] - largestBox[1]
+
+    # figure, ax = plt.subplots(1)
+    # ax.imshow(im)
+    # rect = patches.Rectangle((largestBox[0],largestBox[1]),width,height, edgecolor='r', facecolor="none")
+    # ax.add_patch(rect)
+    # plt.show()
+    # quit()
 
     return largestBox

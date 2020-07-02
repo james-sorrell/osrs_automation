@@ -8,15 +8,18 @@ import keyboard
 
 class OSBrain:
   def __init__(self):
-    keyboard.add_hotkey('ctrl+c', self._killswitch)
+    keyboard.hook(self._killswitch)
     self.window = wh.WindowHandler("runelite")
     self.window.bringForward()
     x, y, _, _ = self.window.getWindowRect()
     self.per = ph.Peripherals(x, y)
     self.detection = df.DetectionHandler(self.window)
   
-  def _killswitch(self):
-    _thread.interrupt_main()
+  def _killswitch(self, event):
+    if(event.name == "ctrl"):
+      self.per.keyUp(key='shift', delay='fast')
+      _thread.interrupt_main()
+    return
 
   def dropInventory(self, pattern=None):
     patterns = [[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
@@ -41,8 +44,8 @@ class OSBrain:
       invSquare = (loc_x+c.CLK_BOX[0], loc_y+c.CLK_BOX[1],
                   loc_x+c.CLK_BOX[2], loc_y+c.CLK_BOX[3])
       self.per.moveToBox(invSquare, 'fast')
-      self.per.click('very_fast')
-    self.per.keyUp('shift', 'fast')
+      self.per.click(delay='very_fast')
+    self.per.keyUp(key='shift', delay='fast')
 
     # We need to hold down shift
     # Then we move the mouse to each index
