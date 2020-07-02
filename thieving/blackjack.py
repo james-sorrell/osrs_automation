@@ -35,12 +35,9 @@ def _clickBox(loc, click='left', move_delay='very_fast', click_delay='very_fast'
 
 b = OSBrain()
 
-# while True:
-#   res = b.detection.colorRangeSearch(BRDY_LOC, BRD_CLR1, BRD_CLR1)
-#   if res is True:
-#     print("Birdy found")
 
-for _ in range(2):
+for _ in range(10):
+
   BANDIT_LOC = b.detection.findArea(MAIN_SCRN, OUTLINE_CLR)
   if BANDIT_LOC is None:
     print("Couldn't find a bandit")
@@ -53,9 +50,8 @@ for _ in range(2):
   # b.per.moveToBox(KNKOUT_LOC, 'very_fast')
   # b.per.click('left', 'very_fast')
   _clickBox(KNKOUT_LOC, move_delay='fast', click_delay='medium')
-  searchTime = np.random.uniform(300, 50)
+  searchTime = np.random.uniform(250, 50)
   KNKOUT_FAIL = th.timedFunction(searchTime, b.detection.colorRangeSearch, BRDY_LOC, BRD_CLR1, BRD_CLR1)
-  #KNKOUT_FAIL = b.detection.colorRangeSearch(BRDY_LOC, BRD_CLR1, BRD_CLR1)
   if KNKOUT_FAIL is True:
     print("Birdies!")
     _clickBox(BANDIT_LOC, 'right')
@@ -69,47 +65,4 @@ for _ in range(2):
     _clickBox(BANDIT_LOC, 'right')
     PCKPKT_LOC = _getPickpocketLocation()
     _clickBox(PCKPKT_LOC)
-#   b.per.moveToBox(BANDIT_LOC, 'fast')
-#   b.per.click('right', 'fast')
-#   b.per.moveToBox(PCKPKT_LOC, 'very_fast')
-#   b.per.click('left', 'very_fast')
-# else:
-#   b.per.moveToBox(BANDIT_LOC, 'fast')
-#   b.per.click('right', 'fast')
-#   b.per.moveToBox(PCKPKT_LOC, 'very_fast')
-#   b.per.click('left', 'very_fast')
-#   b.per.moveToBox(BANDIT_LOC, 'fast')
-#   b.per.click('right', 'fast')
-#   b.per.moveToBox(PCKPKT_LOC, 'very_fast')
-#   b.per.click('left', 'very_fast')
-
-# for _ in range(10):
-#   b.per.moveToBox(PEAR_lOC, 'fast')
-#   while(b.detection.isInventoryFull() is False):
-#     if (b.detection.colorSearch(PEAR_lOC, PEAR_CLR)):
-#       # It gets two chances to try and see it
-#       b.per.click('slow')
-#       fruitNotFoundCount = 0
-#     else:
-#       fruitNotFoundCount += 1
-#       print("Fruit not found count: {}".format(fruitNotFoundCount))
-#     if (fruitNotFoundCount >= 10):
-#       print("Safeguard exit.")
-#       quit()
-#     th.random_sleep_ms(500,50)
-#   th.random_sleep_ms(100, 25)
-#   print("Inventory Full.")
-#   b.dropInventory()
-  
-
-# inv = df.getInventoryStatus(window)
-# # Check if all true (used)
-# if all(inv):
-#   print("Inventory is full")
-
-
-# for i in range(3):
-#   mouse.click()
-#   mouse._sleep('slow')
-#   mouse._sleep('slow')
 

@@ -44,10 +44,10 @@ class DetectionHandler:
   def colorSearch(self, loc, tar):
     c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
     im = self.window.getImage(loc)
-    h, w = im.size
+    w, h = im.size
     for i in range(h):
       for j in range(w):
-        clr = im.getpixel((i, j))
+        clr = im.getpixel((j, i))
         if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
           c.debugPrint("\tDetectionHandler: Color Found.", c.DEBUG)
           return True
@@ -66,11 +66,11 @@ class DetectionHandler:
   def colorRangeSearch(self, loc, tar1, tar2):
     c.debugPrint("DetectionHandler: Searching from C{}:C{} in L{}".format(tar1, tar2, loc), c.DEBUG)
     im = self.window.getImage(loc)
-    h, w = im.size
+    w, h = im.size
     c1L, c1H, c2L, c2H, c3L, c3H = self._getColorLimits(tar1, tar2)
     for i in range(h):
       for j in range(w):
-        clr = im.getpixel((i, j))
+        clr = im.getpixel((j, i))
         if ((c1L <= clr[0] and clr[0] <= c1H) and
             (c2L <= clr[1] and clr[1] <= c2H) and
             (c3L <= clr[2] and clr[2] <= c3H)):
@@ -79,77 +79,126 @@ class DetectionHandler:
     c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
     return False
 
+  # def findArea(self, loc, tar):
+  #   c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
+  #   im = self.window.getImage(loc)
+
+  #   w, h = im.size
+
+  #   locations = {}
+
+  #   for i in range(h):
+  #     for j in range(w):
+  #       clr = im.getpixel((j, i))
+  #       if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
+  #         # Found
+  #         if i in locations:
+  #           locations[i].append(j)
+  #         else:
+  #           locations[i] = [j]
+
+  #   largestArea = 0
+  #   largestBox = None
+  #   currBox = None
+  #   currBoxArea = 0
+  #   prevKey = None
+  #   for key in locations:
+      
+  #     xPos = locations[key]
+  #     if currBox:
+  #       boxL = max(xPos[0], currBox[0])
+  #       boxR = min(xPos[-1], currBox[2])
+  #     else:
+  #       boxL, boxR = xPos[0], xPos[-1]
+  #     newBoxWidth = boxR - boxL
+
+  #     if (prevKey is None):
+  #       prevKey = key
+  #       continue
+
+  #     # Check if sequential locations
+  #     if (abs(key-prevKey) < 2 and newBoxWidth > 5):
+  #       if currBox is None:
+  #         currBox = [xPos[0], prevKey, xPos[1], key]
+  #       else:
+  #         currBox[0] = max(xPos[0], currBox[0])
+  #         currBox[2] = min(xPos[-1], currBox[2])
+  #         currBox[3] = key
+  #     else:
+  #       if currBox is not None:
+  #         currBoxArea = (currBox[2]-currBox[0])*(currBox[3]-currBox[1])
+  #         if currBoxArea > largestArea:
+  #           largestBox = currBox
+  #           largestArea = currBoxArea
+  #       currBox = None
+  #       currBoxArea = None
+
+  #     prevKey = key
+
+  #   if largestBox is None:
+  #     return None
+    
+  #   largestBox[0] += loc[0]
+  #   largestBox[2] += loc[0]
+  #   largestBox[1] += loc[1]
+  #   largestBox[3] += loc[1]
+  #   width = largestBox[2] - largestBox[0]
+  #   height = largestBox[3] - largestBox[1]
+
+  #   figure, ax = plt.subplots(1)
+  #   ax.imshow(im)
+  #   rect = patches.Rectangle((largestBox[0],largestBox[1]),width,height, edgecolor='r', facecolor="none")
+  #   ax.add_patch(rect)
+  #   plt.show()
+  #   quit()
+
+  #   return largestBox
+
   def findArea(self, loc, tar):
     c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
     im = self.window.getImage(loc)
 
+    print("Find Area V2")
     w, h = im.size
 
     locations = {}
 
+    x1, y1, x2, y2 = np.inf, np.inf, 0, 0
     for i in range(h):
       for j in range(w):
         clr = im.getpixel((j, i))
         if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
-          # Found
-          if i in locations:
-            locations[i].append(j)
-          else:
-            locations[i] = [j]
+          if (j < x1):
+            x1 = j
+          if (j > x2):
+            x2 = j
+          if (i < y1):
+            y1 = i
+          if (i > y2):
+            y2 = i
 
-    largestArea = 0
-    largestBox = None
-    currBox = None
-    currBoxArea = 0
-    prevKey = None
-    for key in locations:
-      
-      xPos = locations[key]
-      if currBox:
-        boxL = max(xPos[0], currBox[0])
-        boxR = min(xPos[-1], currBox[2])
-      else:
-        boxL, boxR = xPos[0], xPos[-1]
-      newBoxWidth = boxR - boxL
 
-      if (prevKey is None):
-        prevKey = key
-        continue
-
-      # Check if sequential locations
-      if (abs(key-prevKey) < 2 and newBoxWidth > 5):
-        if currBox is None:
-          currBox = [xPos[0], prevKey, xPos[1], key]
-        else:
-          currBox[0] = max(xPos[0], currBox[0])
-          currBox[2] = min(xPos[-1], currBox[2])
-          currBox[3] = key
-      else:
-        if currBox is not None:
-          currBoxArea = (currBox[2]-currBox[0])*(currBox[3]-currBox[1])
-          if currBoxArea > largestArea:
-            largestBox = currBox
-            largestArea = currBoxArea
-        currBox = None
-        currBoxArea = None
-
-      prevKey = key
-
-    if largestBox is None:
-      return None
+    largestBox = [x1, y1, x2, y2]
     
-    largestBox[0] += loc[0]
-    largestBox[2] += loc[0]
-    largestBox[1] += loc[1]
-    largestBox[3] += loc[1]
-    width = largestBox[2] - largestBox[0]
-    height = largestBox[3] - largestBox[1]
+    midX = (x1+x2)//2
+    midY = (y2+y1)//2
+    smallBox = [midX-5, midY-5, midX+5, midY+5]
+
 
     # figure, ax = plt.subplots(1)
     # ax.imshow(im)
+
+    # width = largestBox[2] - largestBox[0]
+    # height = largestBox[3] - largestBox[1]
     # rect = patches.Rectangle((largestBox[0],largestBox[1]),width,height, edgecolor='r', facecolor="none")
     # ax.add_patch(rect)
+
+    # width = smallBox[2] - smallBox[0]
+    # height = smallBox[3] - smallBox[1]
+    # rect2 = patches.Rectangle((smallBox[0],smallBox[1]),width,height, edgecolor='r', facecolor="none")
+    # ax.add_patch(rect2)
+
     # plt.show()
     # quit()
 
-    return largestBox
+    return smallBox
