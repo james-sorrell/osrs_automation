@@ -10,22 +10,22 @@ class Peripherals:
         self.base_x = base_x
         self.base_y = base_y
 
-    def _sleep(self, delay):
-        duration = self._getDuration(delay)
-        c.debugPrint("\tPeripherals: Sleeping for {:.3f}s.".format(duration), c.MODERATE)
-        time.sleep(duration)
+    # def _sleep(self, delay):
+    #     duration = self._getDuration(delay)
+    #     c.debugPrint("\tPeripherals: Sleeping for {:.3f}s.".format(duration), c.MODERATE)
+    #     time.sleep(duration)
 
     def _getDuration(self, speed):
         if speed is 'very_slow':
-            return np.random.uniform(2.35, 2.45)
+            return 2#np.random.uniform(2.35, 2.45)
         if speed is 'slow':
-            return np.random.uniform(0.95, 1.05)
+            return 1#np.random.uniform(0.95, 1.05)
         if speed is 'medium':
-            return np.random.uniform(0.55, 0.65)
+            return 0.5#np.random.uniform(0.55, 0.65)
         if speed is 'fast':
-            return np.random.uniform(0.2, 0.25)
+            return 0.2#np.random.uniform(0.2, 0.25)
         if speed is 'very_fast':
-            return np.random.uniform(0.05, 0.15)
+            return 0.1#np.random.uniform(0.05, 0.15)
 
     def mousePosition(self):
         x, y =  mh.get_position()
@@ -39,7 +39,7 @@ class Peripherals:
     def click(self, button='left', delay='fast'):
         c.debugPrint("\tMouse: Clicking.", c.MODERATE)
         mh.click(button)
-        self._sleep(delay)
+        #self._sleep(delay)
 
     def moveToBox(self, loc, speed='fast'):
         c.debugPrint("Mouse: Moving {} to location {}.".format(speed, loc), c.MODERATE)
@@ -50,14 +50,14 @@ class Peripherals:
     def press(self, key, delay='fast'):
         c.debugPrint("\tKey: Press {}.".format(key), c.MODERATE)
         ph.press(key)
-        self._sleep(delay)
+        #self._sleep(delay)
 
     def keyDown(self, key, delay='fast'):
         c.debugPrint("\tKey: Key Down {}.".format(key), c.MODERATE)
         ph.keyDown(key)
-        self._sleep(delay)
+        #self._sleep(delay)
 
     def keyUp(self, key, delay='fast'):
         c.debugPrint("\tKey: Key Up {}.".format(key), c.MODERATE)
         ph.keyUp(key)
-        self._sleep(delay)
+        #self._sleep(delay)

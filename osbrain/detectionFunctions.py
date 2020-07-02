@@ -2,7 +2,6 @@ import numpy as np
 import util.config as c
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import cv2
 
 class DetectionHandler:
   def __init__(self, window):

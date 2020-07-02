@@ -1,5 +1,5 @@
 from osbrain.osbrain import OSBrain
-import util.timingHelpers as th
+import util.timingHelpers as t
 import util.config as c
 
 import numpy as np
@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 c.VERBOSITY = 0
 
 CHECK_LOC = (116, 474, 133, 478)
-BANDIT_LOC = (364, 219, 369, 222)
+BANDIT_LOC = (389, 216, 392, 218)
 b = OSBrain()
 
 def _getKnockoutLocation():
@@ -42,21 +42,30 @@ def _checkStatus(im):
     return "fail_succ"
   return None
 
-for _ in range(5):
+for _ in range(50):
 
-  b.per.moveToBox(BANDIT_LOC, 'fast')
-  b.per.click('right', 'fast')
-
+  b.per.moveToBox(BANDIT_LOC, 'very_fast')
+  b.per.click('right')
+  t.randomSleep(50, 0)
+  
   KNKOUT_LOC = _getKnockoutLocation()
   b.per.moveToBox(KNKOUT_LOC, 'fast')
-  b.per.click('left', 'fast')
+  b.per.click('left')
+
+  # # If successful knockout
+  # im = b.window.getImage(CHECK_LOC)
+  # im = np.mean(np.array(im), axis=2)
+  # status = _checkStatus(im)
+  # print("Status after first pick: {}".format(status))
 
   b.per.moveToBox(BANDIT_LOC, 'fast')
-  b.per.click('right', 'fast')
+  b.per.click('right')
+  t.randomSleep(363, 0)
 
   PCKPKT_LOC = _getPickpocketLocation()
   b.per.moveToBox(PCKPKT_LOC, 'fast')
-  b.per.click('left', 'fast')
+  b.per.click('left')
+  t.randomSleep(500, 0)
 
   # If successful knockout
   im = b.window.getImage(CHECK_LOC)
@@ -65,21 +74,33 @@ for _ in range(5):
   print("Status after first pick: {}".format(status))
 
   if (status == "succ"):
-    b.per.moveToBox(BANDIT_LOC, 'very_fast')
-    b.per.click('right', 'fast')
+    b.per.moveToBox(BANDIT_LOC, 'fast')
+    b.per.click('right')
+    t.randomSleep(125, 0)
+
     PCKPKT_LOC = _getPickpocketLocation()
     b.per.moveToBox(PCKPKT_LOC, 'fast')
-    b.per.click('left', 'fast')
+    b.per.click('left')
+    t.randomSleep(25, 0)
 
-  if (status == "fail"):
-    while (True):
-      th.random_sleep_ms(100, 10)
-      im = b.window.getImage(CHECK_LOC)
-      im = np.mean(np.array(im), axis=2)
-      status = _checkStatus(im)
-      print("\tLooped status: {}".format(status))
-      if (status == "fail_fail"):
-        th.random_sleep_ms(3500, 25)
-        break
-      if (status == "fail_succ"):
-        break
+    b.per.moveToBox(BANDIT_LOC, 'fast')
+    b.per.click('right')
+    t.randomSleep(25, 0)
+
+    PCKPKT_LOC = _getPickpocketLocation()
+    b.per.moveToBox(PCKPKT_LOC, 'fast')
+    b.per.click('left')
+    t.randomSleep(25, 0)
+    t.randomSleep(750, 0)
+
+  else:
+    t.randomSleep(2500, 0)
+    im = b.window.getImage(CHECK_LOC)
+    im = np.mean(np.array(im), axis=2)
+    status = _checkStatus(im)
+    print("Status after fail: {}".format(status))
+    if (status == "fail_fail"):
+      t.randomSleep(1800, 0)
+    if (status is None):
+      t.randomSleep(5000, 0)
+    t.randomSleep(2000, 0)
