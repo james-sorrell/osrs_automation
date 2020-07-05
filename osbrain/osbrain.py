@@ -7,9 +7,9 @@ import  _thread
 import keyboard
 
 class OSBrain:
-  def __init__(self):
+  def __init__(self, client="runelite"):
     keyboard.hook(self._killswitch)
-    self.window = wh.WindowHandler("runelite")
+    self.window = wh.WindowHandler(client)
     self.window.bringForward()
     x, y, _, _ = self.window.getWindowRect()
     self.per = ph.Peripherals(x, y)

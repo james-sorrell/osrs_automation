@@ -173,8 +173,12 @@ class DetectionHandler:
         if (i > y2):
           y2 = i
 
+    if (x1 == np.inf or y1 == np.inf
+        or x2 == 0 or y2 ==0):
+        return None
 
     largestBox = [x1, y1, x2, y2]
+
     midX = (x1+x2)//2
     midY = (y2+y1)//2
     smallBox = [midX-5, midY-5, midX+5, midY+5]
@@ -192,8 +196,12 @@ class DetectionHandler:
     # rect2 = patches.Rectangle((smallBox[0],smallBox[1]),width,height, edgecolor='r', facecolor="none")
     # ax.add_patch(rect2)
 
-    # import time
-    # timestr = time.strftime("%Y%m%d-%H%M%S")
-    # plt.savefig("{}.png".format(timestr))
+    # plt.show()
+
+    # Add offset from original search location
+    smallBox[0] += loc[0]
+    smallBox[1] += loc[1]
+    smallBox[2] += loc[0]
+    smallBox[3] += loc[1]
 
     return smallBox
