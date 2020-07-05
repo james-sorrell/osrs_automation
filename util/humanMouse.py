@@ -13,8 +13,13 @@ def move(x2, y2, duration):
   y = scipy.linspace(y1, y2, num=cp, dtype='int')
 
   dist = np.sqrt((x2-x1)**2+(y2-y1)**2)
+  if (dist < 10):
+    mouse.move(x2,y2)
+    return
+
   # Randomise inner points a bit (+-RND at most).
   RND = np.sqrt(dist)/2
+  RND = max(RND, 1)
   xr = scipy.random.randint(-RND, RND, size=cp)
   yr = scipy.random.randint(-RND, RND, size=cp)
   xr[0] = yr[0] = xr[-1] = yr[-1] = 0

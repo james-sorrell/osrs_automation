@@ -5,11 +5,10 @@ import util.config as c
 import numpy as np
 import matplotlib.pyplot as plt
 
-c.VERBOSITY = 0
+c.VERBOSITY = 1
 
-logs = input('How many bows?\n')
-loop = ceil(int(logs)/27)
-print("Looping {} times.".format(loop))
+alchs = int(input('How many alchs?\n'))
+print("Looping {} times.".format(alchs))
 
 b = OSBrain()
 
@@ -17,12 +16,12 @@ CHEST_LOC = (281, 124, 345, 162)
 CHEST_CLR1 = (77, 49, 31)
 CHEST_CLR2 = (72, 45, 28)
 
-for _ in range(loop):
+for _ in range(alchs):
 
     ALCH_LOC = (894, 410, 903, 418)
 
-    b.per.moveToBox(ALCH_LOC, 'medium')
+    b.per.moveToBox(ALCH_LOC, 'fast')
     b.per.click('left')
-    t.randomSleep(160, 15)
+    t.randomSleep(180, 15)
     b.per.click('left')
-    t.randomSleep(750, 100)
+    t.randomSleep(3500, 200)
