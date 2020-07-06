@@ -52,6 +52,13 @@ class WindowHandler:
             (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
             bmpstr, 'raw', 'BGRX', 0, 1)
         im = im.crop(location)
+
+        #hwndDC.DeleteDC()
+        mfcDC.DeleteDC()
+        saveDC.DeleteDC()
+        win32gui.ReleaseDC(self.hwnd, hwndDC)
+        win32gui.DeleteObject(saveBitMap.GetHandle())
+
         return im
 
     def getWindowRect(self):

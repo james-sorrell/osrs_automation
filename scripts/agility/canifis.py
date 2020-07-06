@@ -1,3 +1,4 @@
+import time
 from osbrain.osbrain import OSBrain
 import util.timingHelpers as t
 import util.config as c
@@ -5,10 +6,11 @@ import util.config as c
 import numpy as np
 import matplotlib.pyplot as plt
 
-c.VERBOSITY = 1
+c.VERBOSITY = 0
 
-laps = int(input('How many laps?\n'))
-print("Looping {} times.".format(laps))
+total_time = int(input('How long do you want this to run for? (Minutes)\n'))
+print("Running for {} minutes.".format(total_time))
+start = time.time()
 
 b = OSBrain("OpenOSRS")
 
@@ -16,6 +18,8 @@ MAIN_SCRN = (12, 33, 513, 358)
 OBS_CLR = (0, 255, 0)
 MOG_CLR = (255, 0, 0)
 PLY_LOC = (262, 200)
+
+STABLE_LOC = (215, 200, 220, 205)
 
 def distance(x1, y1, x2, y2):
     return (abs(x2-x1)**2+abs(y2-y1)**2)
@@ -37,7 +41,13 @@ def findClosestLocToPlayer(loc1, loc2):
 
 failsafe = 0
 
-for _ in range(laps):
+end = time.time()
+
+while( (end-start) < 60*total_time ):
+
+    if (failsafe >= 100):
+        print("First Failsafe exceeded threshold, quitting")
+        quit()
 
     MOG_LOC = b.detection.findArea(MAIN_SCRN, MOG_CLR)
     OBS_LOC = b.detection.findArea(MAIN_SCRN, OBS_CLR)
@@ -47,8 +57,6 @@ for _ in range(laps):
     if (OBS_LOC is None and MOG_LOC is None):
         print("Nothing found, incrementing failsafe count.")
         failsafe += 1
-        if (failsafe >= 100):
-            quit()
     else:
         print("Resetting failsafe.")
         failsafe = 0
@@ -61,11 +69,29 @@ for _ in range(laps):
             print("Finding closest location!")
             LOC = findClosestLocToPlayer(MOG_LOC, OBS_LOC)
         b.per.moveToBox(LOC, 'very_fast')
-        t.randomSleep(10, 1)
+        MOG_DIST = findClosestCorner(LOC)
+        print("\tMOG DIST: {}".format(MOG_DIST))
+        t.randomSleep(15, 1)
         b.per.click('left')
-        t.randomSleep(400, 50)
+        t.randomSleep(300+MOG_DIST//4000, 1)
     elif(OBS_LOC is not None):
         b.per.moveToBox(OBS_LOC, 'very_fast')
-        t.randomSleep(10, 1)
+        OBJ_DIST = findClosestCorner(OBS_LOC)
+        print("\tOBJ DIST: {}".format(OBJ_DIST))
+        t.randomSleep(15, 1)
         b.per.click('left')
-        t.randomSleep(400, 50)
+        t.randomSleep(850+OBJ_DIST//4000, 1)
+
+    # Check to see if the character is moving before continuing the loop
+    im, im2 = 0, 1
+    movement_failsafe = 0
+    while(im != im2):
+        im = b.window.getImage(STABLE_LOC)
+        t.randomSleep(200,1)
+        im2 = b.window.getImage(STABLE_LOC)
+        #print("Resetting failsafe.")
+        movement_failsafe = 0
+        np.array_equal(np.array(im), np.array(im2))
+    print("Character is idle.")
+    end = time.time()
+    print("Minutes elapsed: {:.1f}".format((end-start)/60))
