@@ -15,8 +15,8 @@ start = time.time()
 b = OSBrain("OpenOSRS")
 
 MAIN_SCRN = (12, 33, 513, 358)
-OBS_CLR = (0, 255, 0)
-MOG_CLR = (255, 0, 0)
+OBS_CLR = (254, 254, 0)
+MOG_CLR = (254, 0, 254)
 PLY_LOC = (262, 200)
 
 STABLE_LOC = (215, 200, 220, 205)

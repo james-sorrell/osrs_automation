@@ -18,7 +18,6 @@ class DetectionHandler:
     im = np.mean(np.array(im), axis=2)
     empty_inv = np.load("data/inv.npy")
     h, w = im.shape
-    currn_inv = np.array(im)
     # 28 items in inventory
     h_ = h//7
     w_ = w//4

@@ -28,6 +28,38 @@ class WindowHandler:
                 self.hwnd = win[0]
                 self.title = win[1].lower()
 
+    def getPixel(self, x, y):
+        rect = win32gui.GetWindowRect(self.hwnd)
+        w = abs(rect[2] - rect[0])
+        h = abs(rect[3] - rect[1])
+        hwndDC = win32gui.GetWindowDC(self.hwnd)
+        mfcDC = win32ui.CreateDCFromHandle(hwndDC)
+        saveDC = mfcDC.CreateCompatibleDC()
+        saveBitMap = win32ui.CreateBitmap()
+        saveBitMap.CreateCompatibleBitmap(mfcDC, w, h)
+        saveDC.SelectObject(saveBitMap)
+
+        # This should have worked
+        # ret=win32gui.GetPixel(hwndDC, 400, 100)
+
+        result = windll.user32.PrintWindow(self.hwnd, saveDC.GetSafeHdc(), 0)
+        c.debugPrint("getImage: PrintWindow Result {}".format(result), c.DEBUG)
+        bmpinfo = saveBitMap.GetInfo()
+        bmpstr = saveBitMap.GetBitmapBits(True)
+
+        im = Image.frombuffer(
+            'RGB',
+            (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
+            bmpstr, 'raw', 'BGRX', 0, 1)
+        r, g, b = im.getpixel((x, y))
+
+        # Cleanup
+        mfcDC.DeleteDC()
+        saveDC.DeleteDC()
+        win32gui.ReleaseDC(self.hwnd, hwndDC)
+        win32gui.DeleteObject(saveBitMap.GetHandle())
+        return (r, g, b)
+
     def getImage(self, location):
         c.debugPrint("WindowHandler: Getting image from {}".format(location), c.DEBUG)
         left, top, right, bot = self.getWindowRect()
@@ -43,7 +75,7 @@ class WindowHandler:
 
         saveDC.SelectObject(saveBitMap)
         result = windll.user32.PrintWindow(self.hwnd, saveDC.GetSafeHdc(), 0)
-
+        c.debugPrint("getImage: PrintWindow Result {}".format(result), c.DEBUG)
         bmpinfo = saveBitMap.GetInfo()
         bmpstr = saveBitMap.GetBitmapBits(True)
         

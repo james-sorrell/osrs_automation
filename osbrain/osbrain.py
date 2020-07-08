@@ -50,5 +50,3 @@ class OSBrain:
     # We need to hold down shift
     # Then we move the mouse to each index
     # Then we click
-
-    

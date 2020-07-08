@@ -14,7 +14,6 @@ print("Looping {} times.".format(loop))
 
 b = OSBrain()
 
-
 CHEST_LOC = (296, 152, 330, 161)
 CHEST_COLOR_LOC = (249, 86, 389, 215)
 b.per.moveToBox(CHEST_LOC, 'medium')
