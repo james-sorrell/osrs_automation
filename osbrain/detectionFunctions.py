@@ -101,11 +101,11 @@ class DetectionHandler:
         or x2 == 0 or y2 ==0):
         return None
 
-    largestBox = [x1, y1, x2, y2]
+    #largestBox = [x1, y1, x2, y2]
 
     midX = (x1+x2)//2
     midY = (y2+y1)//2
-    smallBox = [midX-2, midY-2, midX+2, midY+2]
+    smallBox = [midX-1, midY-1, midX+1, midY+1]
 
     # figure, ax = plt.subplots(1)
     # ax.imshow(im)
