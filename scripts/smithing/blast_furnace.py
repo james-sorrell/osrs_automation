@@ -49,9 +49,9 @@ def getOre(ore):
         b.per.moveToBox(COAL_LOC, 'fast')
     elif ore == "mith":
         b.per.moveToBox(MITH_LOC, 'fast')
-    t.randomSleep(50, 5)
+    t.randomSleep(175, 5)
     b.per.click('left')
-    t.randomSleep(150, 10)
+    t.randomSleep(175, 10)
     b.per.press('escape')
     t.randomSleep(200, 15)
 
@@ -61,7 +61,7 @@ def fillBag():
     b.per.click('left')
     t.randomSleep(150, 10)
 
-def clickOnChest(speed='medium'):
+def clickOnChest(speed='medium', move_mouse=True):
     CHEST_LOC = b.detection.findArea(MAIN_SCRN, CHEST_CLR)
     if CHEST_LOC is None:
         print("Did not find chest: FATAL Exit")
@@ -69,7 +69,8 @@ def clickOnChest(speed='medium'):
     b.per.moveToBox(CHEST_LOC, speed)
     t.randomSleep(25, 5)
     b.per.click('left')
-    b.per.moveToBox(INV2_LOC, speed)
+    if move_mouse is True:
+        b.per.moveToBox(INV2_LOC, speed)
     dist = findClosestCorner(CHEST_LOC)
     failsafe = 0
     while (dist > 1000):
@@ -83,7 +84,10 @@ def clickOnChest(speed='medium'):
         failsafe += 1
         if (failsafe >= 100):
             quit()
-    chest_sleep = (dist//10)+250
+    if CHEST_LOC is None:
+        chest_sleep = 250
+    else:
+        chest_sleep = (dist//10)+250
     print("ARRIVED CHEST - Buffer sleep: {}".format(chest_sleep))
     t.randomSleep(chest_sleep, 15)
 
@@ -95,7 +99,7 @@ def clickOnConveyor():
     b.per.moveToBox(CONV_LOC, 'fast')
     t.randomSleep(50, 5)
     b.per.click('left')
-    b.per.moveToBox(INV1_LOC, 'medium')
+    b.per.moveToBox(INV1_LOC, 'fast')
     dist = findClosestCorner(CONV_LOC)
     failsafe = 0
     while (dist > 1000):
@@ -109,6 +113,10 @@ def clickOnConveyor():
         failsafe += 1
         if (failsafe >= 100):
             quit()
+    if b.detection.isInventoryFull() is False:
+        print("ARRIVED CONVEYOR - Finished sleep: {}".format(250))
+        t.randomSleep(250, 15)
+        return
     conveyor_sleep = (dist//15)+250
     print("ARRIVED CONVEYOR - Buffer sleep: {}".format(conveyor_sleep))
     t.randomSleep(conveyor_sleep, 15)
@@ -124,10 +132,10 @@ def clickOnDispensor():
         quit()
     DISP_LOC[0] -= 20
     DISP_LOC[2] -= 20
-    b.per.moveToBox(DISP_LOC, 'medium')
+    b.per.moveToBox(DISP_LOC, 'fast')
     t.randomSleep(20, 5)
     b.per.click('left')
-    b.per.moveToBox(INV1_LOC, 'medium')
+    b.per.moveToBox(INV1_LOC, 'fast')
     dist = findClosestCorner(DISP_LOC)
     failsafe = 0
     while (dist > 1000):
@@ -145,7 +153,7 @@ def clickOnDispensor():
         failsafe += 1
         if (failsafe >= 100):
             quit()
-    SLEEP = (dist//15)+250
+    SLEEP = 250
     print("ARRIVED DISPENSOR - Buffer sleep: {}".format(SLEEP))
     t.randomSleep(SLEEP, 15)
 
@@ -165,7 +173,7 @@ def getBarsFromDispensor():
         b.per.moveToBox(DISP_BAR_LOC, 'fast')
         t.randomSleep(20, 5)
         b.per.click('left')
-        t.randomSleep(700, 15)
+        t.randomSleep(500, 15)
 
 def emptyLootingBag():
     b.per.moveToBox(INV1_LOC, 'fast')
@@ -194,7 +202,7 @@ def drinkStaminaPotion():
     b.per.click('left')
     t.randomSleep(40, 5)
     b.per.press('escape')
-    t.randomSleep(125, 5)
+    t.randomSleep(175, 5)
     b.per.moveToBox(INV2_LOC, 'medium')
     t.randomSleep(40, 5)
     b.per.click('left')
@@ -220,10 +228,10 @@ energyLow = False
 while(loops > 0):
 
     print("Rotation One")
-    clickOnChest()
+    clickOnChest('medium', move_mouse=False)
     getOre("coal")
     fillBag()
-    clickOnChest()
+    clickOnChest('medium', move_mouse=False)
     getOre("coal")
     clickOnConveyor()
     emptyLootingBag()
@@ -239,7 +247,7 @@ while(loops > 0):
     clickOnChest()
     getOre("coal")
     fillBag()
-    clickOnChest()
+    clickOnChest('medium', move_mouse=False)
     getOre("mith")
     clickOnConveyor()
     emptyLootingBag()
@@ -252,14 +260,14 @@ while(loops > 0):
 
     print("Energy Low: {}".format(energyLow))
     if energyLow is True:
-        clickOnChest()
+        clickOnChest('fast', move_mouse=False)
         drinkStaminaPotion()
 
     print("Rotation Three")
     clickOnChest()
     getOre("coal")
     fillBag()
-    clickOnChest()
+    clickOnChest('medium', move_mouse=False)
     getOre("mith")
     clickOnConveyor()
     emptyLootingBag()
@@ -272,5 +280,5 @@ while(loops > 0):
 
     print("Energy Low: {}".format(energyLow))
     if energyLow is True:
-        clickOnChest()
+        clickOnChest('fast', move_mouse=False)
         drinkStaminaPotion()
