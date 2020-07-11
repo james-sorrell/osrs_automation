@@ -77,6 +77,38 @@ class DetectionHandler:
     c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
     return False
 
+  def findClosestPoint(self, loc, tar1, tar2, reference_location, buffer=20):
+    """ Gets an image and location "loc" and searches for the closest occurance 
+    of a colour "tar" to the provided reference location """
+    
+    c.debugPrint("DetectionHandler: Searching for C{}:C{} in L{}".format(tar1, tar2, loc), c.DEBUG)
+    im = self.window.getImage(loc)
+    # w, h = im.size
+    plt.imshow(im)
+    plt.show()
+
+    def _distance(x1, y1, x2, y2):
+      return (abs(x2-x1)**2+abs(y2-y1)**2)
+
+    dist = np.inf
+    x, y = 0, 0
+
+    for clr, i, j in self._iterateImage(im):
+      c1L, c1H, c2L, c2H, c3L, c3H = self._getColorLimits(tar1, tar2)
+      if ((c1L <= clr[0] and clr[0] <= c1H) and
+          (c2L <= clr[1] and clr[1] <= c2H) and
+          (c3L <= clr[2] and clr[2] <= c3H)):
+        _dist = _distance(j, i, reference_location[0], reference_location[1])
+        if _dist < dist:
+          dist = _dist
+          x, y = j, i
+
+    # Add offset from original search location
+    x += loc[0]
+    y += loc[1]
+
+    return x, y
+
   def findArea(self, loc, tar, threshold=0):
     c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
     im = self.window.getImage(loc)
