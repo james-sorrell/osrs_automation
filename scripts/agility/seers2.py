@@ -39,15 +39,21 @@ def findClosestLocToPlayer(loc1, loc2):
         return loc1
     return loc2
 
+CAMELOT_LOC = [695, 315, 705, 325]
+def teleportCamelot():
+    b.per.moveToBox(CAMELOT_LOC, 'very_fast')
+    t.randomSleep(15, 1)
+    b.per.click('left')
+    t.randomSleep(2200, 125)
 
 failsafe = 0
 end = time.time()
 
 while( (end-start) < 60*total_time ):
 
-    if (failsafe >= 100):
-        print("First Failsafe exceeded threshold, quitting")
-        quit()
+    if (failsafe >= 2):
+        teleportCamelot()
+        failsafe = 0
 
     MOG_LOC = b.detection.findArea(MAIN_SCRN, MOG_CLR)
     OBS_LOC = b.detection.findArea(MAIN_SCRN, OBS_CLR)
@@ -57,6 +63,7 @@ while( (end-start) < 60*total_time ):
     if (OBS_LOC is None and MOG_LOC is None):
         print("Nothing found, incrementing failsafe count.")
         failsafe += 1
+        continue
     else:
         print("Resetting failsafe.")
         failsafe = 0
@@ -67,20 +74,21 @@ while( (end-start) < 60*total_time ):
             LOC = MOG_LOC
         else:
             print("Finding closest location!")
-            LOC = findClosestLocToPlayer(MOG_LOC, OBS_LOC)
+            #LOC = findClosestLocToPlayer(MOG_LOC, OBS_LOC)
+            LOC = MOG_LOC
         b.per.moveToBox(LOC, 'very_fast')
         MOG_DIST = findClosestCorner(LOC)
         print("\tMOG DIST: {}".format(MOG_DIST))
         t.randomSleep(15, 1)
         b.per.click('left')
-        t.randomSleep(300+MOG_DIST//4000, 1)
+        t.randomSleep(550+MOG_DIST//3500, 1)
     elif(OBS_LOC is not None):
         b.per.moveToBox(OBS_LOC, 'very_fast')
         OBJ_DIST = findClosestCorner(OBS_LOC)
         print("\tOBJ DIST: {}".format(OBJ_DIST))
         t.randomSleep(15, 1)
         b.per.click('left')
-        t.randomSleep(850+OBJ_DIST//4000, 1)
+        t.randomSleep(1400+OBJ_DIST//3500, 1)
 
     # Check to see if the character is moving before continuing the loop
     im, im2 = 0, 1
