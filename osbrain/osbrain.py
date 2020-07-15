@@ -21,6 +21,20 @@ class OSBrain:
       _thread.interrupt_main()
     return
 
+  def getInvLoc(self, location):
+      x1, y1, x2, y2 = c.INV_LOC
+      w = x2-x1
+      h = y2-y1
+      h_ = h//7
+      w_ = w//4
+      row = location%4
+      col = location//4
+      loc_x = x1+row*w_
+      loc_y = y1+col*h_
+      invSquare = (loc_x+c.CLK_BOX[0], loc_y+c.CLK_BOX[1],
+                  loc_x+c.CLK_BOX[2], loc_y+c.CLK_BOX[3])
+      return invSquare
+
   def dropInventory(self, pattern=None):
     patterns = [[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
                 [0,1,4,5,8,9,12,13,16,17,20,21,24,25,2,3,6,7,10,11,14,15,18,19,22,23,26,27],
@@ -29,20 +43,9 @@ class OSBrain:
     if pattern is None:
       pattern = patterns[np.random.randint(len(patterns))]
 
-    x1, y1, x2, y2 = c.INV_LOC
-    w = x2-x1
-    h = y2-y1
-    h_ = h//7
-    w_ = w//4
-    
     self.per.keyDown('shift', 'fast')
     for location in pattern:
-      row = location%4
-      col = location//4
-      loc_x = x1+row*w_
-      loc_y = y1+col*h_
-      invSquare = (loc_x+c.CLK_BOX[0], loc_y+c.CLK_BOX[1],
-                  loc_x+c.CLK_BOX[2], loc_y+c.CLK_BOX[3])
+      invSquare = getInvLoc(location)
       self.per.moveToBox(invSquare, 'fast')
       self.per.click(delay='very_fast')
     self.per.keyUp(key='shift', delay='fast')

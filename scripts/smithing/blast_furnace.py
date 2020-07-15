@@ -49,9 +49,9 @@ def getOre(ore):
         b.per.moveToBox(COAL_LOC, 'fast')
     elif ore == "mith":
         b.per.moveToBox(MITH_LOC, 'fast')
-    t.randomSleep(175, 5)
+    t.randomSleep(200, 5)
     b.per.click('left')
-    t.randomSleep(175, 10)
+    t.randomSleep(200, 10)
     b.per.press('escape')
     t.randomSleep(200, 15)
 
@@ -85,9 +85,9 @@ def clickOnChest(speed='medium', move_mouse=True):
         if (failsafe >= 100):
             quit()
     if CHEST_LOC is None:
-        chest_sleep = 250
+        chest_sleep = 600
     else:
-        chest_sleep = (dist//10)+250
+        chest_sleep = (dist//3)+600
     print("ARRIVED CHEST - Buffer sleep: {}".format(chest_sleep))
     t.randomSleep(chest_sleep, 15)
 
@@ -191,7 +191,7 @@ def emptyLootingBag():
     #t.randomSleep(125, 15)
 
 def drinkStaminaPotion():
-    b.per.moveToBox(POT_LOC, 'fast')
+    b.per.moveToBox(POT_LOC, 'medium')
     t.randomSleep(40, 5)
     b.per.click('right')
     t.randomSleep(40, 5)
