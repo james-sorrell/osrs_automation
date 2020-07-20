@@ -49,11 +49,16 @@ def getOre(ore):
         b.per.moveToBox(COAL_LOC, 'fast')
     elif ore == "mith":
         b.per.moveToBox(MITH_LOC, 'fast')
-    t.randomSleep(200, 5)
+    while(b.detection.isBankOpen() is False):
+        print("Waiting for bank to open...")
+    print("Bank Open.")
+    t.randomSleep(50, 1)
     b.per.click('left')
-    t.randomSleep(200, 10)
+    t.randomSleep(220, 15)
     b.per.press('escape')
-    t.randomSleep(200, 15)
+    while(b.detection.isBankOpen() is True):
+        print("Waiting for bank to close...")
+    print("Bank Closed.")
 
 def fillBag():
     b.per.moveToBox(INV1_LOC, 'fast')
@@ -61,13 +66,13 @@ def fillBag():
     b.per.click('left')
     t.randomSleep(150, 10)
 
-def clickOnChest(speed='medium', move_mouse=True):
+def clickOnChest(speed='fast', move_mouse=True):
     CHEST_LOC = b.detection.findArea(MAIN_SCRN, CHEST_CLR)
     if CHEST_LOC is None:
         print("Did not find chest: FATAL Exit")
         quit()
     b.per.moveToBox(CHEST_LOC, speed)
-    t.randomSleep(25, 5)
+    t.randomSleep(50, 5)
     b.per.click('left')
     if move_mouse is True:
         b.per.moveToBox(INV2_LOC, speed)
@@ -85,9 +90,9 @@ def clickOnChest(speed='medium', move_mouse=True):
         if (failsafe >= 100):
             quit()
     if CHEST_LOC is None:
-        chest_sleep = 600
+        chest_sleep = 200
     else:
-        chest_sleep = (dist//3)+600
+        chest_sleep = (dist//3)+200
     print("ARRIVED CHEST - Buffer sleep: {}".format(chest_sleep))
     t.randomSleep(chest_sleep, 15)
 
@@ -191,6 +196,9 @@ def emptyLootingBag():
     #t.randomSleep(125, 15)
 
 def drinkStaminaPotion():
+    while(b.detection.isBankOpen() is False):
+        print("Waiting for bank to open...")
+    print("Bank Open.")
     b.per.moveToBox(POT_LOC, 'medium')
     t.randomSleep(40, 5)
     b.per.click('right')
@@ -202,7 +210,9 @@ def drinkStaminaPotion():
     b.per.click('left')
     t.randomSleep(40, 5)
     b.per.press('escape')
-    t.randomSleep(175, 5)
+    while(b.detection.isBankOpen() is True):
+        print("Waiting for bank to close...")
+    print("Bank Closed.")
     b.per.moveToBox(INV2_LOC, 'medium')
     t.randomSleep(40, 5)
     b.per.click('left')
@@ -216,22 +226,27 @@ def checkEnergyLow():
     return False
 
 def bankBars():
-    b.per.moveToBox(INV2_LOC, 'medium')
+    while(b.detection.isBankOpen() is False):
+        print("Waiting for bank to open...")
+    print("Bank Open.")
+    b.per.moveToBox(INV2_LOC, 'fast')
     t.randomSleep(40, 5)
     b.per.click('left')
     t.randomSleep(250, 5)
     b.per.press('escape')
-    t.randomSleep(255, 5)
+    while(b.detection.isBankOpen() is True):
+        print("Waiting for bank to close...")
+    print("Bank Closed.")
 
 energyLow = False
 
 while(loops > 0):
 
     print("Rotation One")
-    clickOnChest('medium', move_mouse=False)
+    clickOnChest('fast', move_mouse=False)
     getOre("coal")
     fillBag()
-    clickOnChest('medium', move_mouse=False)
+    clickOnChest('fast', move_mouse=False)
     getOre("coal")
     clickOnConveyor()
     emptyLootingBag()
@@ -247,7 +262,7 @@ while(loops > 0):
     clickOnChest()
     getOre("coal")
     fillBag()
-    clickOnChest('medium', move_mouse=False)
+    clickOnChest('fast', move_mouse=False)
     getOre("mith")
     clickOnConveyor()
     emptyLootingBag()
@@ -267,7 +282,7 @@ while(loops > 0):
     clickOnChest()
     getOre("coal")
     fillBag()
-    clickOnChest('medium', move_mouse=False)
+    clickOnChest('fast', move_mouse=False)
     getOre("mith")
     clickOnConveyor()
     emptyLootingBag()

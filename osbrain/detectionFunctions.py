@@ -30,6 +30,13 @@ class DetectionHandler:
         index += 1
     return inv_status
   
+  def isBankOpen(self):
+    im =  np.array(self.window.getImage(c.BANK_CHECK_LOC))
+    empty_inv = np.load("data/bank_check.npy")
+    if np.array_equal(im, empty_inv) is False:
+      return False
+    return True
+
   def isInventoryFull(self):
     inv_status = self.getInventoryStatus()
     inv_full = all(inv_status)

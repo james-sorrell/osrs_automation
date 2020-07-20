@@ -9,6 +9,8 @@ DEBUG = 2
 INV_LOC = (562, 240, 730, 492) # Location of inventory in RuneLite client
 CLK_BOX = (10, 10, 25, 25) # Interactable square within each inventory grid
 
+BANK_CHECK_LOC = (484, 44, 486, 46) # Location of Bank Check Grid
+
 def debugPrint(string, thresh):
   if (thresh <= VERBOSITY):
     print(string)
