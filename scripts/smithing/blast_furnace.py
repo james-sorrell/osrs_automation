@@ -54,7 +54,9 @@ def getOre(ore):
     print("Bank Open.")
     t.randomSleep(50, 1)
     b.per.click('left')
-    t.randomSleep(220, 15)
+    while (b.detection.isInventoryFull() is False):
+        print("Waiting for inventory to fill...")
+    print("Inventory Full.")
     b.per.press('escape')
     while(b.detection.isBankOpen() is True):
         print("Waiting for bank to close...")
@@ -64,7 +66,9 @@ def fillBag():
     b.per.moveToBox(INV1_LOC, 'fast')
     t.randomSleep(50, 5)
     b.per.click('left')
-    t.randomSleep(150, 10)
+    while (b.detection.isInventoryFull() is True):
+        print("Waiting for inventory to empty...")
+    print("Inventory Empty.")
 
 def clickOnChest(speed='fast', move_mouse=True):
     CHEST_LOC = b.detection.findArea(MAIN_SCRN, CHEST_CLR)
@@ -101,14 +105,14 @@ def clickOnConveyor():
     if CONV_LOC is None:
         print("Did not find conveyor: FATAL Exit")
         quit()
-    b.per.moveToBox(CONV_LOC, 'fast')
+    b.per.moveToBox(CONV_LOC, 'very_fast')
     t.randomSleep(50, 5)
     b.per.click('left')
     b.per.moveToBox(INV1_LOC, 'fast')
     dist = findClosestCorner(CONV_LOC)
     failsafe = 0
     while (dist > 1000):
-        t.randomSleep(1000, 1)
+        t.randomSleep(200, 1)
         print("\tDistance to conveyor: {}".format(dist))
         CONV_LOC = b.detection.findArea(MAIN_SCRN, CONVEYOR_CLR)
         if CONV_LOC is None:
@@ -116,15 +120,17 @@ def clickOnConveyor():
             break
         dist = findClosestCorner(CONV_LOC)
         failsafe += 1
-        if (failsafe >= 100):
+        if (failsafe >= 500):
             quit()
-    if b.detection.isInventoryFull() is False:
-        print("ARRIVED CONVEYOR - Finished sleep: {}".format(250))
-        t.randomSleep(250, 15)
-        return
-    conveyor_sleep = (dist//15)+250
-    print("ARRIVED CONVEYOR - Buffer sleep: {}".format(conveyor_sleep))
-    t.randomSleep(conveyor_sleep, 15)
+    # if b.detection.isInventoryFull() is False:
+    #     print("ARRIVED CONVEYOR - Finished")
+    #     return
+    # conveyor_sleep = (dist//15)+250
+    # print("ARRIVED CONVEYOR - Buffer sleep: {}".format(conveyor_sleep))
+    # t.randomSleep(conveyor_sleep, 15)
+    while (b.detection.isInventoryFull() is True):
+        print("Waiting for inventory to Empty...")
+    print("Inventory Emptied.")
 
 def clickOnDispensor():
     DISP_LOC = b.detection.findArea(DISP_SCRN, DISPENSOR_CLR_RDY)
@@ -168,8 +174,7 @@ def getBarsFromDispensor():
         while DISP_LOC is None:
             print("Waiting for bars to be ready...")
             DISP_LOC = b.detection.findArea(DISP_SRCH_SCRN, DISPENSOR_CLR_RDY)
-            t.randomSleep(100, 1)
-        t.randomSleep(20, 1)
+            t.randomSleep(50, 1)
         print("Bars ready!")
         b.per.moveToBox(DISP_LOC, 'fast')
         t.randomSleep(20, 5)
@@ -181,7 +186,7 @@ def getBarsFromDispensor():
         t.randomSleep(500, 15)
 
 def emptyLootingBag():
-    b.per.moveToBox(INV1_LOC, 'fast')
+    b.per.moveToBox(INV1_LOC, 'very_fast')
     t.randomSleep(20, 5)
     # b.per.click('right')
     # x, y = b.per.mousePosition()
@@ -192,31 +197,34 @@ def emptyLootingBag():
     b.per.keyDown('shiftleft')
     t.randomSleep(20, 5)
     b.per.click('left')
-    t.randomSleep(75, 5)
+    while (b.detection.isInventoryFull() is False):
+        print("Waiting for inventory to fill...")
+    print("Inventory Full.")
+    b.per.keyUp('shiftleft')
     #t.randomSleep(125, 15)
 
 def drinkStaminaPotion():
     while(b.detection.isBankOpen() is False):
         print("Waiting for bank to open...")
     print("Bank Open.")
-    b.per.moveToBox(POT_LOC, 'medium')
-    t.randomSleep(40, 5)
+    b.per.moveToBox(POT_LOC, 'fast')
+    t.randomSleep(50, 2)
     b.per.click('right')
-    t.randomSleep(40, 5)
+    t.randomSleep(50, 2)
     x, y = b.per.mousePosition()
     WD1_LOC = [x-1, y+41, x+1, y+43] 
     b.per.moveToBox(WD1_LOC, 'fast')
-    t.randomSleep(40, 5)
+    t.randomSleep(50, 2)
     b.per.click('left')
-    t.randomSleep(40, 5)
+    t.randomSleep(100, 2)
     b.per.press('escape')
     while(b.detection.isBankOpen() is True):
         print("Waiting for bank to close...")
     print("Bank Closed.")
     b.per.moveToBox(INV2_LOC, 'medium')
-    t.randomSleep(40, 5)
+    t.randomSleep(50, 1)
     b.per.click('left')
-    t.randomSleep(125, 15)
+    t.randomSleep(150, 15)
 
 def checkEnergyLow():
     no_energy_clr = (19, 19, 19)
@@ -232,7 +240,9 @@ def bankBars():
     b.per.moveToBox(INV2_LOC, 'fast')
     t.randomSleep(40, 5)
     b.per.click('left')
-    t.randomSleep(250, 5)
+    while (b.detection.isInventoryFull() is True):
+        print("Waiting for inventory to empty...")
+    print("Inventory Empty.")
     b.per.press('escape')
     while(b.detection.isBankOpen() is True):
         print("Waiting for bank to close...")
