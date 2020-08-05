@@ -141,8 +141,8 @@ def clickOnDispensor():
     if DISP_LOC is None:
         print("Did not find dispensor: FATAL Exit")
         quit()
-    DISP_LOC[0] -= 20
-    DISP_LOC[2] -= 20
+    DISP_LOC[0] -= 17
+    DISP_LOC[2] -= 17
     b.per.moveToBox(DISP_LOC, 'fast')
     t.randomSleep(20, 5)
     b.per.click('left')
@@ -150,7 +150,7 @@ def clickOnDispensor():
     dist = findClosestCorner(DISP_LOC)
     failsafe = 0
     while (dist > 1000):
-        t.randomSleep(1000, 1)
+        t.randomSleep(50, 1)
         print("\tDistance to dispensor: {}".format(dist))
         DISP_LOC = b.detection.findArea(DISP_SCRN, DISPENSOR_CLR_RDY)
         if DISP_LOC is None:
@@ -162,7 +162,7 @@ def clickOnDispensor():
             break
         dist = findClosestCorner(DISP_LOC)
         failsafe += 1
-        if (failsafe >= 100):
+        if (failsafe >= 1000):
             quit()
     SLEEP = 250
     print("ARRIVED DISPENSOR - Buffer sleep: {}".format(SLEEP))
@@ -186,21 +186,23 @@ def getBarsFromDispensor():
         t.randomSleep(500, 15)
 
 def emptyLootingBag():
-    b.per.moveToBox(INV1_LOC, 'very_fast')
-    t.randomSleep(20, 5)
-    # b.per.click('right')
-    # x, y = b.per.mousePosition()
-    # EMPTY_LOC = [x-1, y+86, x+1, y+88] 
-    # b.per.moveToBox(EMPTY_LOC, 'fast')
-    # t.randomSleep(20, 5)
-    # b.per.click('left')
-    b.per.keyDown('shiftleft')
-    t.randomSleep(20, 5)
-    b.per.click('left')
     while (b.detection.isInventoryFull() is False):
         print("Waiting for inventory to fill...")
+        b.per.moveToBox(INV1_LOC, 'very_fast')
+        t.randomSleep(20, 5)
+        # b.per.click('right')
+        # x, y = b.per.mousePosition()
+        # EMPTY_LOC = [x-1, y+86, x+1, y+88] 
+        # b.per.moveToBox(EMPTY_LOC, 'fast')
+        # t.randomSleep(20, 5)
+        # b.per.click('left')
+        b.per.keyDown('shiftleft')
+        t.randomSleep(40, 5)
+        b.per.click('left') 
+        t.randomSleep(40, 5)
+        b.per.keyUp('shiftleft')
+        t.randomSleep(800, 10)
     print("Inventory Full.")
-    b.per.keyUp('shiftleft')
     #t.randomSleep(125, 15)
 
 def drinkStaminaPotion():
