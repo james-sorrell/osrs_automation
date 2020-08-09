@@ -52,15 +52,10 @@ class DetectionHandler:
       for j in range(w):
         yield(im.getpixel((j,i)), i, j)
 
-  def colorSearch(self, loc, tar):
-    c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
-    im = self.window.getImage(loc)
-    for clr, i, j in self._iterateImage(im):
-      if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
-        c.debugPrint("\tDetectionHandler: Color Found.", c.DEBUG)
-        return True
-    c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
-    return False
+  def colorSearch(self, loc, tar, tar2=None):
+    if tar2 is None:
+      return self.singleColorSearch(loc, tar)
+    return self.colorRangeSearch(loc, tar, tar2)
 
   def _getColorLimits(self, tar1, tar2):
     c1L = min(tar1[0], tar2[0])
@@ -70,6 +65,16 @@ class DetectionHandler:
     c3L = min(tar1[2], tar2[2])
     c3H = max(tar1[2], tar2[2])
     return c1L, c1H, c2L, c2H, c3L, c3H
+
+  def singleColorSearch(self, loc, tar):
+    c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
+    im = self.window.getImage(loc)
+    for clr, i, j in self._iterateImage(im):
+      if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
+        c.debugPrint("\tDetectionHandler: Color Found.", c.DEBUG)
+        return True
+    c.debugPrint("\tDetectionHandler: Did not find.", c.DEBUG)
+    return False
 
   def colorRangeSearch(self, loc, tar1, tar2):
     c.debugPrint("DetectionHandler: Searching from C{}:C{} in L{}".format(tar1, tar2, loc), c.DEBUG)
@@ -116,7 +121,15 @@ class DetectionHandler:
 
     return x, y
 
-  def findArea(self, loc, tar, threshold=0):
+  def checkColors(self, clr, tar, tar2=None):
+    if tar2 is None:
+      return all([ c1 == c2 for c1, c2 in zip(clr, tar)])
+    c1L, c1H, c2L, c2H, c3L, c3H = self._getColorLimits(tar, tar2)
+    return ((c1L <= clr[0] and clr[0] <= c1H) and
+        (c2L <= clr[1] and clr[1] <= c2H) and
+        (c3L <= clr[2] and clr[2] <= c3H))
+
+  def findArea(self, loc, tar, tar2=None):
     c.debugPrint("DetectionHandler: Searching for C{} in L{}".format(tar, loc), c.DEBUG)
     im = self.window.getImage(loc)
 
@@ -126,7 +139,7 @@ class DetectionHandler:
 
     x1, y1, x2, y2 = np.inf, np.inf, 0, 0
     for clr, i, j in self._iterateImage(im):
-      if all([ c1 == c2 for c1, c2 in zip(clr, tar)]):
+      if self.checkColors(clr, tar, tar2):
         if (j < x1):
           x1 = j
         if (j > x2):

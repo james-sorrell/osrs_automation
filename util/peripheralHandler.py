@@ -36,7 +36,7 @@ class Peripherals:
         c.debugPrint("\tMouse: Moving to {},{}.".format(x, y), c.MODERATE)
         move(self.base_x+x, self.base_y+y, duration)
 
-    def click(self, button='left', delay='fast'):
+    def click(self, button='left'):
         c.debugPrint("\tMouse: Clicking.", c.MODERATE)
         mh.click(button)
         #self._sleep(delay)
@@ -47,17 +47,17 @@ class Peripherals:
         y = np.random.randint(loc[1], loc[3])
         self._moveToPoint(x, y, speed)
 
-    def press(self, key, delay='fast'):
+    def press(self, key):
         c.debugPrint("\tKey: Press {}.".format(key), c.MODERATE)
         ph.press(key)
         #self._sleep(delay)
 
-    def keyDown(self, key, delay='fast'):
+    def keyDown(self, key):
         c.debugPrint("\tKey: Key Down {}.".format(key), c.MODERATE)
         ph.keyDown(key)
         #self._sleep(delay)
 
-    def keyUp(self, key, delay='fast'):
+    def keyUp(self, key):
         c.debugPrint("\tKey: Key Up {}.".format(key), c.MODERATE)
         ph.keyUp(key)
         #self._sleep(delay)

@@ -1,6 +1,7 @@
 import util.windowHandler as wh
 import util.peripheralHandler as ph
 import util.config as c
+import util.timingHelpers as t
 import osbrain.detectionFunctions as df
 import numpy as np
 import  _thread
@@ -17,7 +18,7 @@ class OSBrain:
   
   def _killswitch(self, event):
     if(event.name == "ctrl"):
-      self.per.keyUp(key='shift', delay='fast')
+      self.per.keyUp(key='shift')
       _thread.interrupt_main()
     return
 
@@ -43,12 +44,14 @@ class OSBrain:
     if pattern is None:
       pattern = patterns[np.random.randint(len(patterns))]
 
-    self.per.keyDown('shift', 'fast')
+    self.per.keyUp('shift')
     for location in pattern:
-      invSquare = getInvLoc(location)
-      self.per.moveToBox(invSquare, 'fast')
-      self.per.click(delay='very_fast')
-    self.per.keyUp(key='shift', delay='fast')
+      invSquare = self.getInvLoc(location)
+      self.per.moveToBox(invSquare, 'very_fast')
+      self.per.keyDown('shift')
+      self.per.click('left')
+    t.randomSleep(200,50)
+    self.per.keyUp('shift')
 
     # We need to hold down shift
     # Then we move the mouse to each index

@@ -3,14 +3,15 @@ import util.timingHelpers as t
 import util.config as c
 
 import random
+from tqdm import trange
 import numpy as np
 import matplotlib.pyplot as plt
 
-c.VERBOSITY = 1
+c.VERBOSITY = 0
 
-CW_CHEST_LOC = [245, 250, 265, 270]
+CW_CHEST_LOC = [230, 230, 300, 270]
 CHEST_CLR = [72, 65, 65]
-CHEST_LOC = [245, 270, 270, 290]
+CHEST_LOC = [255, 265, 270, 290]
 
 UNF_LOC = [185, 160, 190, 165]
 EYE_LOC = [230, 160, 235, 165]
@@ -70,9 +71,9 @@ def makePotions():
     b.per.moveToBox(LOC, 'very_fast')
     t.randomSleep(50, 5)
     b.per.click('left')
-    t.randomSleep(850,50)
+    t.randomSleep(925,50)
     b.per.press('1')
-    t.randomSleep(16400, 200)
+    t.randomSleep(16600, 200)
 
 def bankPotions():
     b.per.moveToBox(CHEST_LOC, 'very_fast')
@@ -106,7 +107,7 @@ def bankPotions():
 
 eps = 0.005
 
-while(loops > 0):
+for _ in trange(loops):
     # while(True):
     if (b.detection.isBankOpen() is False):
         valid_location = b.detection.colorSearch(CW_CHEST_LOC, CHEST_CLR)
@@ -123,7 +124,7 @@ while(loops > 0):
     getEye()
     makePotions()
     bankPotions()
-    loops -= 1
+    #loops -= 1
     if (random.random() < eps):
         print("Randomly moving mouse somewhere.")
         b.per.moveToBox([0, 0, 2000, 2000])

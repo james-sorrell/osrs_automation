@@ -3,6 +3,7 @@ from osbrain.osbrain import OSBrain
 import util.timingHelpers as t
 import util.config as c
 
+from PIL import ImageChops
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -93,8 +94,11 @@ while( (end-start) < 60*total_time ):
     # Check to see if the character is moving before continuing the loop
     im, im2 = 0, 1
     movement_failsafe = 0
-    while(im != im2):
-        im = b.window.getImage(STABLE_LOC)
+
+
+    inMovement = True
+    while(inMovement == True):
+        im1 = b.window.getImage(STABLE_LOC)
         t.randomSleep(200,1)
         im2 = b.window.getImage(STABLE_LOC)
         #print("Resetting failsafe.")
