@@ -7,7 +7,7 @@ from PIL import ImageChops
 import numpy as np
 import matplotlib.pyplot as plt
 
-c.VERBOSITY = 0
+c.VERBOSITY = 1
 
 total_time = int(input('How long do you want this to run for? (Minutes)\n'))
 print("Running for {} minutes.".format(total_time))
@@ -19,8 +19,6 @@ MAIN_SCRN = (12, 33, 513, 358)
 OBS_CLR = (254, 254, 0)
 MOG_CLR = (254, 0, 254)
 PLY_LOC = (262, 200)
-
-STABLE_LOC = (215, 200, 220, 205)
 
 def distance(x1, y1, x2, y2):
     return (abs(x2-x1)**2+abs(y2-y1)**2)
@@ -46,6 +44,17 @@ def teleportCamelot():
     t.randomSleep(15, 1)
     b.per.click('left')
     t.randomSleep(2200, 125)
+
+def waitIdle():
+    STABLE_LOC = (215, 200, 220, 205)
+    stationary = False
+    while(stationary == False):
+        im1 = b.window.getImage(STABLE_LOC)
+        t.randomSleep(200,25)
+        im2 = b.window.getImage(STABLE_LOC)
+        stationary = np.array_equal(np.array(im1), np.array(im2))
+        print("Stationary: {}".format(stationary))
+    print("Character is idle.")
 
 failsafe = 0
 end = time.time()
@@ -95,15 +104,7 @@ while( (end-start) < 60*total_time ):
     im, im2 = 0, 1
     movement_failsafe = 0
 
-
-    inMovement = True
-    while(inMovement == True):
-        im1 = b.window.getImage(STABLE_LOC)
-        t.randomSleep(200,1)
-        im2 = b.window.getImage(STABLE_LOC)
-        #print("Resetting failsafe.")
-        movement_failsafe = 0
-        np.array_equal(np.array(im), np.array(im2))
+    waitIdle()
     print("Character is idle.")
     end = time.time()
     print("Minutes elapsed: {:.1f}".format((end-start)/60))

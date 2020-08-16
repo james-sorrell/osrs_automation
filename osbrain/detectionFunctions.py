@@ -96,8 +96,6 @@ class DetectionHandler:
     c.debugPrint("DetectionHandler: Searching for C{}:C{} in L{}".format(tar1, tar2, loc), c.DEBUG)
     im = self.window.getImage(loc)
     # w, h = im.size
-    plt.imshow(im)
-    plt.show()
 
     def _distance(x1, y1, x2, y2):
       return (abs(x2-x1)**2+abs(y2-y1)**2)
@@ -114,6 +112,9 @@ class DetectionHandler:
         if _dist < dist:
           dist = _dist
           x, y = j, i
+
+    if x == 0 and y == 0:
+      return None, None
 
     # Add offset from original search location
     x += loc[0]
