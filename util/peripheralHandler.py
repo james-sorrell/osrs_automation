@@ -16,15 +16,15 @@ class Peripherals:
     #     time.sleep(duration)
 
     def _getDuration(self, speed):
-        if speed is 'very_slow':
+        if speed == 'very_slow':
             return 2#np.random.uniform(2.35, 2.45)
-        if speed is 'slow':
+        if speed == 'slow':
             return 1#np.random.uniform(0.95, 1.05)
-        if speed is 'medium':
+        if speed == 'medium':
             return 0.5#np.random.uniform(0.55, 0.65)
-        if speed is 'fast':
+        if speed == 'fast':
             return 0.2#np.random.uniform(0.2, 0.25)
-        if speed is 'very_fast':
+        if speed == 'very_fast':
             return 0.1#np.random.uniform(0.05, 0.15)
 
     def mousePosition(self):

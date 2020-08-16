@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 c.VERBOSITY = 0
 
-CW_CHEST_LOC = [245, 250, 265, 270]
+CW_CHEST_LOC = [245, 250, 300, 270]
 CHEST_CLR = [72, 65, 65]
 CHEST_LOC = [245, 270, 270, 290]
 
